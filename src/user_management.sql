@@ -1,5 +1,5 @@
 -- Initial SQLite setup
-.open fittrackpro.db
+.open fittrackpro.sqlite
 .mode column
 
 -- Enable foreign key support
@@ -8,16 +8,27 @@
 
 -- 1. Retrieve all members
 -- TODO: Write a query to retrieve all members
-
+select
+    member_id,
+    first_name,
+    last_name,
+    email,
+    join_date
+ from members;
 -- 2. Update a member's contact information
 -- TODO: Write a query to update a member's contact information
+-- update members
+-- set member_id
 
+-- set emergency_contact_name = 
 -- 3. Count total number of members
 -- TODO: Write a query to count the total number of members
-
+-- select count(*) as totalMembers
+-- from members;
 -- 4. Find member with the most class registrations
 -- TODO: Write a query to find the member with the most class registrations
-
+-- select
+--     max()
 -- 5. Find member with the least class registrations
 -- TODO: Write a query to find the member with the least class registrations
 
