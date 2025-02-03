@@ -17,8 +17,13 @@ select
  from members;
 -- 2. Update a member's contact information
 -- TODO: Write a query to update a member's contact information
--- update members
--- set member_id
+update members
+set 
+    phone_number = '555-9876',
+    email = 'emily.jones.updated@email.com'
+WHERE
+    member_id = 5
+
 
 -- set emergency_contact_name = 
 -- 3. Count total number of members
