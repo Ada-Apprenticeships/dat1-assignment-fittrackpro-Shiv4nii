@@ -1,6 +1,7 @@
 -- Initial SQLite setup
 .open fittrackpro.sqlite
 .mode column
+.mode box
 
 -- Enable foreign key support
 PRAGMA foreign_keys = ON; 
@@ -25,13 +26,11 @@ WHERE
 -- TODO: Write a query to calculate the average duration of gym visits for each membership type
 SELECT
     ms.type AS membership_type,
-    AVG(JULIANDAY(a.check_out_time) - JULIANDAY(a.check_in_time)) * 24 * 60 AS avg_visit_duration_minutes
+    AVG(JULIANDAY(a.check_out_time) - JULIANDAY(a.check_in_time)) * 24 * 60 AS avg_visit_duration_minutes -- to convert the time between check in and check out to minutes
 FROM
     memberships ms
 JOIN
     attendance a ON ms.member_id = a.member_id
-WHERE
-    ms.status = 'Active'
 GROUP BY
     ms.type;
 
@@ -49,6 +48,6 @@ FROM
 JOIN
     members m ON ms.member_id = m.member_id
 WHERE
-    strftime('%Y', ms.end_date) = strftime('%Y', 'now')
+    strftime('%Y', ms.end_date) = strftime('%Y', 'now') -- to filter for memberships ending in the current year
 AND
     ms.status = 'Active';  

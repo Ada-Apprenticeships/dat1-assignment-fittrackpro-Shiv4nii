@@ -1,6 +1,7 @@
 -- Initial SQLite setup
 .open fittrackpro.sqlite
 .mode column
+.mode box
 
 -- Enable foreign key support
 PRAGMA foreign_keys = ON;  
@@ -43,12 +44,13 @@ FROM
 JOIN 
     class_attendance ca ON m.member_id = ca.member_id
 WHERE
-    ca.attendance_status IN ('Registered', 'Attended')  
+    ca.attendance_status IN ('Registered', 'Attended')  -- to filter for only 'registered' or 'attended', not 'unattended'
 GROUP BY 
-    m.member_id, m.first_name, m.last_name
+    m.member_id, m.first_name, m.last_name -- group by the details about the members to aggregate their count
 ORDER BY 
-    registration_count DESC
-LIMIT 1;  
+    registration_count DESC --starts with the most
+LIMIT 1;  --so there's only one row output (find the most class registrations)
+
 
 -- 5. Find member with the least class registrations
 -- TODO: Write a query to find the member with the least class registrations
@@ -67,17 +69,22 @@ WHERE
 GROUP BY 
     m.member_id, m.first_name, m.last_name
 ORDER BY 
-    registration_count ASC
-LIMIT 1;  
+    registration_count ASC --starts with the least
+LIMIT 1;  --so there's only one row output (find the least class registrations)
+
 
 -- 6. Calculate the percentage of members who have attended at least one class
 -- TODO: Write a query to calculate the percentage of members who have attended at least one class
 
 SELECT
-    (CAST(COUNT(DISTINCT attended_members.member_id) AS FLOAT) / COUNT(DISTINCT m.member_id)) * 100 AS percentage_of_members
+    (CAST(COUNT(DISTINCT attended_members.member_id) AS FLOAT) / COUNT(DISTINCT m.member_id)) * 100 AS percentage_of_members -- used distinct so only single count per member, then can calculated percentage
 FROM 
     members m
-LEFT JOIN 
+LEFT JOIN --left join to ensure that all members have been conisdered
     (SELECT DISTINCT member_id FROM class_attendance WHERE attendance_status = 'Attended') attended_members
 ON 
     m.member_id = attended_members.member_id;
+
+   
+   
+   

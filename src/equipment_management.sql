@@ -1,7 +1,7 @@
 -- Initial SQLite setup
 .open fittrackpro.sqlite
 .mode column
-
+.mode box
 -- Enable foreign key support
 PRAGMA foreign_keys = ON; 
 -- Equipment Management Queries
@@ -13,7 +13,7 @@ SELECT
     name,
     next_maintenance_date
 from equipment
-where next_maintenance_date BETWEEN date('now') AND date('now', '+30 days'); 
+where next_maintenance_date BETWEEN date('now') AND date('now', '+30 days'); -- to filter for the next 30 days
 
 -- 2. Count equipment types in stock
 -- TODO: Write a query to count equipment types in stock

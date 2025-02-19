@@ -1,7 +1,7 @@
 -- Initial SQLite setup
 .open fittrackpro.sqlite
 .mode column
-
+.mode box
 -- Enable foreign key support
 PRAGMA foreign_keys = ON; 
 -- Class Scheduling Queries
@@ -12,7 +12,7 @@ PRAGMA foreign_keys = ON;
 SELECT
     c.class_id,
     c.name AS class_name,
-    s.first_name || ' ' || s.last_name AS instructor_name
+    s.first_name || ' ' || s.last_name AS instructor_name --concatenate first and last name
 FROM 
     classes c
 JOIN 
@@ -20,27 +20,29 @@ JOIN
 JOIN 
     staff s ON cs.staff_id = s.staff_id;
 
+
 -- 2. Find available classes for a specific date
 -- TODO: Write a query to find available classes for a specific date
 
 SELECT
-    c.class_id,
-    c.name,
+    cs.schedule_id AS class_id,
+    c.name AS class_name,
     cs.start_time,
     cs.end_time,
-    (c.capacity - COUNT(ca.member_id)) AS available_spots
+    (c.capacity - COUNT(ca.class_attendance_id)) AS available_spots
 FROM
     class_schedule cs
 JOIN
     classes c ON cs.class_id = c.class_id
-LEFT JOIN
-    class_attendance ca ON cs.schedule_id = ca.schedule_id AND ca.attendance_status IN ('Registered', 'Attended')
+LEFT JOIN -- left join to calculate all registered attendees for each session, so all class schedules are considered even if no members have registered
+    class_attendance ca ON cs.schedule_id = ca.schedule_id AND ca.attendance_status = 'Registered'
 WHERE
-    DATE(cs.start_time) = '2025-02-01' 
+    DATE(cs.start_time) = '2025-02-01'
 GROUP BY
-    c.class_id, c.name, cs.start_time, cs.end_time, c.capacity
+    cs.schedule_id, c.name
 ORDER BY
     cs.start_time;
+ 
 
 -- 3. Register a member for a class
 -- TODO: Write a query to register a member for a class
@@ -84,7 +86,7 @@ FROM (
         COUNT(DISTINCT ca.schedule_id) AS class_count
     FROM 
         members m
-    LEFT JOIN 
+    LEFT JOIN -- left join to include all members, even those with no attendance
         class_attendance ca ON m.member_id = ca.member_id
     WHERE 
         ca.attendance_status IN ('Registered', 'Attended')

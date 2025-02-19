@@ -1,7 +1,7 @@
 -- Initial SQLite setup
 .open fittrackpro.sqlite
 .mode column
-
+.mode box
 -- Enable foreign key support
 PRAGMA foreign_keys = ON; 
 -- Attendance Tracking Queries
@@ -40,8 +40,8 @@ FROM
 GROUP BY 
     day_of_week
 ORDER BY 
-    visit_count DESC
-LIMIT 1;
+    visit_count DESC -- starts with the highest visit count
+LIMIT 1; -- only gives the first output to only get the busiest day
 
 -- 4. Calculate the average daily attendance for each location
 -- TODO: Write a query to calculate the average daily attendance for each location
@@ -60,8 +60,10 @@ FROM (
         a.location_id, visit_date
 ) daily_counts
 JOIN 
-    locations l ON daily_counts.location_id = l.location_id
+    locations l ON daily_counts.location_id = l.location_id -- join to associate every visit count with a location name
 GROUP BY 
     l.name
 ORDER BY 
     avg_daily_attendance DESC;
+
+

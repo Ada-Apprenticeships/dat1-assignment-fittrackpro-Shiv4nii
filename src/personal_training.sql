@@ -1,7 +1,7 @@
 -- Initial SQLite setup
 .open fittrackpro.sqlite
 .mode column
-
+.mode box
 -- Enable foreign key support
 PRAGMA foreign_keys = ON; 
 -- Personal Training Queries
@@ -18,9 +18,9 @@ SELECT
 FROM
     personal_training_sessions pts
 JOIN
-    staff s ON pts.staff_id = s.staff_id
+    staff s ON pts.staff_id = s.staff_id -- to match the session to the trainer by their staff id
 JOIN
-    members m ON pts.member_id = m.member_id
+    members m ON pts.member_id = m.member_id -- to match the session to the member by their member id
 WHERE
     s.first_name = 'Ivy' AND s.last_name = 'Irwin'
 ORDER BY
